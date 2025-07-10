@@ -1,95 +1,138 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import styles from "./main8bit.module.css";
+
+const terminalBlocks = [
+  ["🌅 SUNRICE TAXI — приключение начинается"],
+  [
+    '"Система растёт сама, если в ней есть свет." (чуть-чуть любви, и немного безумия)'
+  ],
+  [
+    'Представь, что по всей планете разбросаны 10 000 световых посланий —',
+    'мы называем их POSTULATES.',
+    'Каждый из них несёт в себе кусочек кода — мудрости, вдохновения и действия. Если ты читаешь это — один из них нашёл тебя.'
+  ],
+  [
+    'Это не просто NFT. Это ключ к приключению, где ты становишься частью тайной команды из трёх человек, чтобы выполнить небольшое, но волшебное задание.'
+  ],
+  [
+    '🛠️ Что ты делаешь:',
+    '- Получаешь свой POSTULATE (в виде NFT)',
+    '- Ищешь ещё двух таких, как ты — через Интернет, чат, мем или просто сердце',
+    '- Вместе выполняете задание по распостранению света — нарисовать арт, сделать трек, забомбить POSTULATE в виде граффити.',
+    '- Возвращаете это в SUNRICE COMMUNITY — и ваша NFT активируется как знак, что свет прошёл'
+  ],
+  [
+    '🚖 Такси не приедет, пока вы не станете командой. Но когда оно приедет — начнётся настоящее путешествие.'
+  ],
+  [
+    '✨ Это игра. Это обучение. Это цифровая магия. Ты не просто пользователь. Ты световой участник. Найдите друг друга.',
+    'Восстановите соединение сети.'
+  ],
+  [
+    'Вы можете этого не видеть, но вы можете это почувствовать.',
+    'Слушайте! Свет просыпается!'
+  ],
+  [
+    'Хотите присоединиться к приключению? (yes/no)'
+  ]
+];
+
+const typeSoundUrl = "/typewriter-key.mp3";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [displayedBlocks, setDisplayedBlocks] = useState<string[][]>([[""]]);
+  const [blockIdx, setBlockIdx] = useState(0);
+  const [lineIdx, setLineIdx] = useState(0);
+  const [charIdx, setCharIdx] = useState(0);
+  const [showActions, setShowActions] = useState(false);
+  const [noMsg, setNoMsg] = useState("");
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const router = useRouter();
+  const typing = useRef(true);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  useEffect(() => {
+    const enableSound = () => setSoundEnabled(true);
+    window.addEventListener("pointerdown", enableSound, { once: true });
+    return () => window.removeEventListener("pointerdown", enableSound);
+  }, []);
+
+  useEffect(() => {
+    if (!typing.current) return;
+    if (blockIdx >= terminalBlocks.length) {
+      setShowActions(true);
+      typing.current = false;
+      return;
+    }
+    const block = terminalBlocks[blockIdx];
+    const line = block[lineIdx];
+    if (charIdx < line.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedBlocks((prev) => {
+          const updated = prev.map((b) => [...b]);
+          updated[blockIdx][lineIdx] = (updated[blockIdx][lineIdx] || "") + line[charIdx];
+          return updated;
+        });
+        setCharIdx((c) => c + 1);
+        // Play sound for each char (new Audio instance for each), только если разрешено
+        if (soundEnabled && line[charIdx] !== ' ' && line[charIdx] !== '\n') {
+          const audio = new Audio(typeSoundUrl);
+          audio.volume = 0.5;
+          audio.play();
+        }
+      }, 25);
+      return () => clearTimeout(timeout);
+    } else if (lineIdx < block.length - 1) {
+      setTimeout(() => {
+        setDisplayedBlocks((prev) => {
+          const updated = prev.map((b) => [...b]);
+          updated[blockIdx].push("");
+          return updated;
+        });
+        setLineIdx((l) => l + 1);
+        setCharIdx(0);
+      }, 120);
+    } else {
+      setTimeout(() => {
+        setDisplayedBlocks((prev) => [...prev, [""]]);
+        setBlockIdx((b) => b + 1);
+        setLineIdx(0);
+        setCharIdx(0);
+      }, 350);
+    }
+  }, [charIdx, lineIdx, blockIdx, soundEnabled]);
+
+  const handleYes = () => {
+    router.push("/submit");
+  };
+  const handleNo = () => {
+    setNoMsg("Может быть, в следующий раз! Спасибо за интерес к SUNRICE TAXI 🚕");
+    setShowActions(false);
+  };
+
+  return (
+    <div className={styles.terminalBg}>
+      <div className={styles.terminalBody}>
+        {displayedBlocks.map((block, bIdx) => (
+          <div key={bIdx}>
+            {block.map((line, lIdx) => (
+              <div key={lIdx}>
+                {line}
+                {bIdx === displayedBlocks.length - 1 && lIdx === block.length - 1 && !showActions ? <span className={styles.terminalCursor}></span> : null}
+              </div>
+            ))}
+            {bIdx < displayedBlocks.length - 1 && <hr className={styles.terminalDivider} />}
+          </div>
+        ))}
+        {showActions && (
+          <div className={styles.terminalActions}>
+            <button className={styles.terminalBtn} onClick={handleYes}>yes</button>
+            <button className={styles.terminalBtn} onClick={handleNo}>no</button>
+          </div>
+        )}
+        {noMsg && <div className={styles.terminalMsg}>{noMsg}</div>}
+      </div>
     </div>
   );
 }

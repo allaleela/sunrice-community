@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sunrice Circle Next.js Engine
 
-## Getting Started
+Базовый движок на Next.js с поддержкой TypeScript.
 
-First, run the development server:
+## Скрипты
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- `npm run dev` — запуск в режиме разработки
+- `npm run build` — сборка
+- `npm start` — запуск production-сборки
+
+## Структура
+- `src/app` — страницы и layout
+- `src/components` — переиспользуемые компоненты
+- `src/app/about` — страница "О нас"
+- `src/app/page.tsx` — главная страница
+
+---
+
+## Как исправить
+
+### 1. Сохраните картинку вручную
+
+- Скачайте изображение, которое вы прислали (правой кнопкой — "Сохранить как...").
+- Поместите его в папку `public` вашего проекта.
+  Полный путь должен быть:
+  ```
+  /Users/dimasudarewskii/Documents/web/sunrice-circle/public/pixel1.png
+  ```
+
+### 2. Проверьте путь в коде
+
+В файле `src/app/page.tsx` путь должен быть:
+```jsx
+<Image
+  src="/pixel1.png"
+  alt="Pixel Art"
+  width={180}
+  height={180}
+  style={{ imageRendering: "pixelated", marginBottom: 16, borderRadius: 12, border: "2px solid #222", background: "#fff" }}
+  priority
+/>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Перезапустите сервер
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+После добавления файла перезапустите dev-сервер:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Проверьте в браузере
 
-## Learn More
+Перейдите по адресу:
+```
+http://localhost:3000/pixel1.png
+```
+Если картинка открывается — всё ок, она будет видна и на сайте.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Если после этого картинка всё равно не отображается — пришлите скриншот структуры папки `public` и/или ошибку из консоли браузера. Я помогу разобраться!**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### Генерация новых 8-битных картинок
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Я могу сгенерировать для вас 5 новых пиксель-арт изображений (например, через онлайн-генераторы или с помощью AI-генераторов).  
+Если хотите — уточните, какой стиль или персонажи вам нужны, и я дам инструкции или ссылки на генерацию, а также подготовлю код для галереи!
