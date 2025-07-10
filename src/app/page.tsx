@@ -36,6 +36,9 @@ const terminalBlocks = [
   ],
   [
     'Хотите присоединиться к приключению? (yes/no)'
+  ],
+  [
+    'Связаться: Telegram @psyfreeman'
   ]
 ];
 
@@ -48,6 +51,7 @@ export default function Home() {
   const [charIdx, setCharIdx] = useState(0);
   const [showActions, setShowActions] = useState(false);
   const [noMsg, setNoMsg] = useState("");
+  const [showContact, setShowContact] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const router = useRouter();
   const typing = useRef(true);
@@ -63,6 +67,7 @@ export default function Home() {
     if (blockIdx >= terminalBlocks.length) {
       setShowActions(true);
       typing.current = false;
+      setTimeout(() => setShowContact(true), 800);
       return;
     }
     const block = terminalBlocks[blockIdx];
@@ -118,7 +123,18 @@ export default function Home() {
           <div key={bIdx}>
             {block.map((line, lIdx) => (
               <div key={lIdx}>
-                {line}
+                {line.includes('Telegram @psyfreeman') ? (
+                  <a
+                    href="https://t.me/psyfreeman"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#b6ffb6', textDecoration: 'underline', wordBreak: 'break-all' }}
+                  >
+                    {line}
+                  </a>
+                ) : (
+                  <>{line}</>
+                )}
                 {bIdx === displayedBlocks.length - 1 && lIdx === block.length - 1 && !showActions ? <span className={styles.terminalCursor}></span> : null}
               </div>
             ))}
@@ -132,6 +148,21 @@ export default function Home() {
           </div>
         )}
         {noMsg && <div className={styles.terminalMsg}>{noMsg}</div>}
+        {showContact && (
+          <>
+            <hr className={styles.terminalDivider} />
+            <div style={{ textAlign: 'center', marginTop: 12 }}>
+              <a
+                href="https://t.me/psyfreeman"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#b6ffb6', textDecoration: 'underline', fontWeight: 600 }}
+              >
+                Telegram: @psyfreeman
+              </a>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
