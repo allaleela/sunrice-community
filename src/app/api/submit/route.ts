@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     } else {
       return NextResponse.json({ error: "n8n error" }, { status: 500 });
     }
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: "Network error" }, { status: 500 });
   }
 } 
